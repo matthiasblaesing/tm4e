@@ -1,48 +1,185 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>org.eclipse.tm4e.core</artifactId>
-  <packaging>eclipse-plugin</packaging>
-  <version>0.4.1-SNAPSHOT</version>
-  <parent>
-    <groupId>org.eclipse</groupId>
-    <artifactId>org.eclipse.tm4e</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
-  </parent>
-  
-  <!-- Repeat dependencies as Mvn artifacts to org.eclipse.tm4e.core
-   can be consumed as a Java lib with Mvn (without OSGi not p2).
-   Tycho's pomDependencies must NOT be set to "consider" -->
-  <dependencies>
-		<dependency>
-			<groupId>org.jruby.joni</groupId>
-			<artifactId>joni</artifactId>
-			<version>2.1.11</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jruby.jcodings</groupId>
-			<artifactId>jcodings</artifactId>
-			<version>1.0.18</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.8.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-css</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-util</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>eu.doppel-helix.netbeans.lib.tm4e</groupId>
+    <artifactId>org.eclipse.tm4e.core</artifactId>
+    <packaging>jar</packaging>
+    <version>0.4.1-pack1</version>
+
+    <name>TextMate support in Java - Core</name>
+    <description>TM4ME provides a Java API to tokenize textual documents according to TextMate grammers.</description>
+    <url>https://github.com/matthiasblaesing/tm4e</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>8</maven.compiler.release>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jruby.joni</groupId>
+            <artifactId>joni</artifactId>
+            <version>2.1.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jruby.jcodings</groupId>
+            <artifactId>jcodings</artifactId>
+            <version>1.0.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-css</artifactId>
+            <version>1.7</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>compiletests</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Bundle-RequiredExecutionEnvironment>JavaSE-8</Bundle-RequiredExecutionEnvironment>
+                            <Bundle-Name>TextMate support in Java</Bundle-Name>
+                            <Bundle-Vendor>Eclipse TM4E</Bundle-Vendor>
+                            <Bundle-Localization>plugin</Bundle-Localization>
+                            <Bundle-SymbolicName>org.eclipse.tm4e.core</Bundle-SymbolicName>
+                            <Bundle-Version>0.4.1</Bundle-Version>
+                            <Require-Bundle>org.apache.batik.css;bundle-version="1.9.1";resolution:=optional,org.apache.batik.util;bundle-version="1.9.1";resolution:=optional,com.google.gson;resolution:=optional,org.jcodings;bundle-version="1.0.18",org.joni;bundle-version="2.1.11"</Require-Bundle>
+                            <Import-Package>org.w3c.css.sac;resolution:=optional,org.w3c.css.sac.helpers;resolution:=optional,org.w3c.dom.css</Import-Package>
+                            <Export-Package>org.eclipse.tm4e.core,org.eclipse.tm4e.core.grammar,org.eclipse.tm4e.core.internal.grammar;x-friends:="org.eclipse.tm4e.core.tests",org.eclipse.tm4e.core.internal.grammars;x-friends:="org.eclipse.tm4e.core.tests",org.eclipse.tm4e.core.internal.matcher;x-friends:="org.eclipse.tm4e.core.tests",org.eclipse.tm4e.core.internal.theme.reader;x-friends:="org.eclipse.tm4e.core.tests",org.eclipse.tm4e.core.internal.types;x-internal:=true,org.eclipse.tm4e.core.internal.utils;x-friends:="org.eclipse.tm4e.core.tests",org.eclipse.tm4e.core.model,org.eclipse.tm4e.core.registry,org.eclipse.tm4e.core.theme,org.eclipse.tm4e.core.theme.css</Export-Package>
+                            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <updateReleaseInfo>true</updateReleaseInfo>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <developers>
+        <developer>
+            <email>mblaesing@doppel-helix.eu</email>
+            <name>Matthias Bläsing</name>
+            <url>https://github.com/matthiasblaesing/</url>
+            <roles>
+                <role>packager</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>EPL-2.0</name>
+            <url>https://www.eclipse.org/legal/epl-2.0/</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/matthiasblaesing/tm4e</connection>
+        <developerConnection>scm:git:git@github.com:matthiasblaesing/tm4e.git</developerConnection>
+        <url>https://github.com/matthiasblaesing/tm4e</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss.sonatype.org</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss.sonatype.org</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>release-profile</id>
+
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
